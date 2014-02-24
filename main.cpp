@@ -1,5 +1,4 @@
 #include <iostream>
-#include <math.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -40,11 +39,10 @@ void gaussianFilter(Mat& src, Mat& result, int besarKernel, double delta)
     int filterOffset = besarKernel / 2;
 
     result = Mat::zeros(src.rows - filterOffset*2, src.cols - filterOffset*2, src.type());
-    int x = 0, y = 0;
+
     double sumKeabuan;
 
     for(int ysrc = filterOffset; ysrc < src.rows - filterOffset; ++ysrc){
-        x = 0;
         for(int xsrc = filterOffset; xsrc < src.cols - filterOffset; ++xsrc){
 
             sumKeabuan = 0;
@@ -56,10 +54,8 @@ void gaussianFilter(Mat& src, Mat& result, int besarKernel, double delta)
                 }
             }
 
-            result.at<uchar>(y, x) = sumKeabuan;
-            ++x;
+            result.at<uchar>(ysrc - filterOffset, xsrc - filterOffset) = sumKeabuan;
         }
-        ++y;
     }
 }
 
