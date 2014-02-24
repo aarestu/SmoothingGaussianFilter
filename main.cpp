@@ -5,15 +5,15 @@
 using namespace std;
 using namespace cv;
 
-void gaussianFilter(Mat& src, Mat& result, int besarKernel, double delta);
+void gaussianFilter(const Mat& src, Mat& result, int besarKernel, double delta);
 void gaussianKernelGenerator(Mat &result, int besarKernel, double delta);
-Mat rgb2gray(Mat& src);
+void rgb2gray(const Mat src, Mat &result);
 
 int main(int argc, char *argv[])
 {
     Mat src = imread("D:\\Project\\C++\\CitraDigital\\lena.jpg");
 
-    src = rgb2gray(src);
+    rgb2gray(src, src);
 
     Mat gausianFilter;
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 }
 
-void gaussianFilter(Mat& src, Mat& result, int besarKernel, double delta)
+void gaussianFilter(const Mat& src, Mat& result, int besarKernel, double delta)
 {
     Mat kernel;
 
@@ -75,31 +75,27 @@ void gaussianKernelGenerator(Mat &result, int besarKernel, double delta)
     }
 }
 
-Mat rgb2gray(Mat& src)
+void rgb2gray(const Mat src, Mat &result)
 {
     CV_Assert(src.depth() != sizeof(uchar)); //harus 8 bit
 
-    Mat mc1(src.rows, src.cols, CV_8UC1); //buat matrik 1 chanel
+    result = Mat::zeros(src.rows, src.cols, CV_8UC1); //buat matrik 1 chanel
     uchar data;
 
     if(src.channels() == 3){
-        Mat_<Vec3b> _I = src;
 
         for( int i = 0; i < src.rows; ++i)
             for( int j = 0; j < src.cols; ++j )
             {
-                data = (uchar)(_I(i,j)[0] * 0.0722 + _I(i,j)[1] * 0.7152 + _I(i,j)[2] * 0.2126);
+                data = (uchar)(((Mat_<Vec3b>) src)(i,j)[0] * 0.0722 + ((Mat_<Vec3b>) src)(i,j)[1] * 0.7152 + ((Mat_<Vec3b>) src)(i,j)[2] * 0.2126);
 
-                mc1.at<uchar>(i,j) = data;
-
+                result.at<uchar>(i,j) = data;
             }
 
-        src = _I;
-        return mc1;
 
     }else{
 
-        return src;
+        result = src;
     }
 
 }
